@@ -54,7 +54,7 @@
             kibanaURL             URL of kibana where application will be published
 
 5. Run the project
-    python3 main.py <email> <appName> <containerPort> <healthCheckPath> <gitRepoName> <branchName> <secretName> <operation> <companyEmailDomain> <ecsClusterName> <region> <awsAccountID> <HostedZoneId> <githubOrgName> <iamRoleNameForEcsTasks> <iamExecutionRoleName> <elasticSearchEndpointForLogs> <elastciUserName> <elasticPassowrd> <vpcId> <domainNameOfHostedZone> <loadBalancerDNSEndpoint> <AWSHostedZoneIDForLoadbalancerRegionBasis> <HTTTPSListenerARN> <HTTPListenerARN> <subnetID> <securityGroupID> <kibanaURL>
+    `python3 main.py <email> <appName> <containerPort> <healthCheckPath> <gitRepoName> <branchName> <secretName> <operation> <companyEmailDomain> <ecsClusterName> <region> <awsAccountID> <HostedZoneId> <githubOrgName> <iamRoleNameForEcsTasks> <iamExecutionRoleName> <elasticSearchEndpointForLogs> <elastciUserName> <elasticPassowrd> <vpcId> <domainNameOfHostedZone> <loadBalancerDNSEndpoint> <AWSHostedZoneIDForLoadbalancerRegionBasis> <HTTTPSListenerARN> <HTTPListenerARN> <subnetID> <securityGroupID> <kibanaURL>`
 
         change the above values as per your environment 
 
