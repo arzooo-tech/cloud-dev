@@ -3,6 +3,20 @@
 
 ### On Mac Machine
 
+1. Pre-requisites needed before running this project 
+    a. `AWS Account to create resources`
+            1. `Permissions for users running this ECS, ECR, Route53, EC2, Secretmanager`
+    b. `Application should be dockerized`
+    c. `Application should be able to read environment variables from AWS Secret manager`
+    d. `Elastic search and kibana endpoints for application logs`
+    e. `Elastic search and kibana credentials for creating index and pushing logs`
+    f. `AWS VPC, subnet and security group details`
+    g. `Github access`
+    h. `Load balancer in which all these host entries will be created`
+    i. `IAM Role for ECS Tasks`
+    j. `Hosted zone in AWS Route53`
+
+
 1. Clone the repository using 
     `git clone <repo_url>`
 2. Install the python3 on machine based on system 
