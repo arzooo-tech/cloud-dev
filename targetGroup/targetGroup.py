@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 # define the boto client
 client = boto3.client('elbv2', region_name= region)
 
-
+# Method to create target group
 def createTargetGroup(targetGroupName: str, port: int, healthCheckPath: str, userEmail: str, vpcId: str):
     """ Method to create target group
     
@@ -75,6 +75,7 @@ def createTargetGroup(targetGroupName: str, port: int, healthCheckPath: str, use
         return False
 
 
+# Method to get ARN of target group
 def getTargetGroupARN(targetGroupName: str):
     """_summary_
 
@@ -91,8 +92,8 @@ def getTargetGroupARN(targetGroupName: str):
         print(str(e))
         return False
     
-#print(getTargetGroupARN('arzooo-be-test-som'))
-    
+
+# Method to delete target group    
 def deleteTargetGroup(targetGroupARN: str):
     """_summary_
 

@@ -9,7 +9,19 @@ import time
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
+# Method to ping health check endpoint
 def pingHealthEndpoint(domainName: str, healthCheckPath: str):
+    """_summary_
+
+    Args:
+        domainName (str): DNS name to which service is pointing to 
+        healthCheckPath (str): Health check path for service
+
+    Returns:
+        _type_: Service response
+    """
+    
     healthCheckUrlFull = 'https://' + domainName + '/' + healthCheckPath
     print("health check url is {} {} {}".format('\033[1m', healthCheckUrlFull, '\033[0m'))
     print("Please wait while app is getting deployed")

@@ -8,6 +8,7 @@ region = 'ap-south-1'
 client = boto3.client('secretsmanager', region_name= region)
 
 
+# Method to create new secret by inheriting from existing secret
 def getAndCreateSecret(sourceSecretName: str, destSecretName: str, userEmail: str):
     """_summary_
 
@@ -46,6 +47,7 @@ def getAndCreateSecret(sourceSecretName: str, destSecretName: str, userEmail: st
         return False
 
 
+# Method to delete secret from secret manager
 def deleteSecret(secretName: str):
     """_summary_
 

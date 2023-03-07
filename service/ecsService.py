@@ -12,22 +12,20 @@ logger = logging.getLogger(__name__)
 
 client = boto3.client('ecs', region_name= region)
 
-# def checkIfServiceExistsOld(ecsServiceName: str):
-#     response = client.list_services(
-#         cluster = 'cloud-dev',
-#         launchType = 'FARGATE'
-#     )
-    
-#     for ecsServicearnExistingAll in response['serviceArns']:
-#         ecsServiceNameExisting = ecsServicearnExistingAll.split('/')[2]
-#         if ecsServiceName in ecsServiceNameExisting:
-#             return True
-#         else:
-#             return False
-
 
 # Method for check is ecs service exists using service ARNs
 def checkIfServiceExists(ecsServiceName: str, ecsClusterName: str, region: str, awsAccountID: str ):
+    """_summary_
+
+    Args:
+        ecsServiceName (str): Name of the ecs service to be created
+        ecsClusterName (str): Name of the ecs cluster in which service will be created
+        region (str): Region in which firelens will be created
+        awsAccountID (str): AWS Account ID
+
+    Returns:
+        _type_: If ECS Service exists
+    """
     response = client.list_services(
         cluster = ecsClusterName,
         launchType = 'FARGATE'
@@ -39,7 +37,7 @@ def checkIfServiceExists(ecsServiceName: str, ecsClusterName: str, region: str, 
     else:
         return False
 
-
+# Method to create ecs service
 def createService(ecsServiceName: str, taskDefinitionName: str, targetGroupArn: str, containerName: str, containerPort: int, userEmail: str, ecsClusterName: str, subnetID: str, securityGroupID: str):
     """_summary_
 
@@ -102,12 +100,13 @@ def createService(ecsServiceName: str, taskDefinitionName: str, targetGroupArn: 
         print(str(e))
         return False
 
-
+# Method to delete ECS Service
 def deleteEcsService(serviceName: str, ecsClusterName: str):
     """_summary_
 
     Args:
         serviceName (str): Name of the service to be deleted
+        ecsClusterName (str): ECS Cluster name
     """
     try:
         response = client.delete_service(
@@ -122,7 +121,7 @@ def deleteEcsService(serviceName: str, ecsClusterName: str):
         print(str(e))
         return False
 
-
+# Method to update existing ECS Service
 def updateECSService(ecsServiceName: str, taskDefinitionARN: str, ecsClusterName: str):
     """_summary_
 
@@ -144,7 +143,4 @@ def updateECSService(ecsServiceName: str, taskDefinitionARN: str, ecsClusterName
     except Exception as e:
         print(str(e))
         return False
-
-
-
 

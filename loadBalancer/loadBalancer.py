@@ -6,9 +6,6 @@ import logging
 import random
 
 region = 'ap-south-1'
-#HTTTPSListenerARN = 'arn:aws:elasticloadbalancing:ap-south-1:092042625037:listener/app/cloud-dev-ondemand-lb/04f65db33b0e9ca8/796cdecd56a4734a'
-#HTTPListenerARN = 'arn:aws:elasticloadbalancing:ap-south-1:092042625037:listener/app/cloud-dev-ondemand-lb/04f65db33b0e9ca8/b552173237ed9660'
-
 
 # Define the custom logger
 logging.basicConfig(level=logging.INFO)
@@ -17,6 +14,8 @@ logger = logging.getLogger(__name__)
 # define the boto client
 client = boto3.client('elbv2', region_name= region)
 
+
+# Method to add https rule to load balancer
 def addRuleToLoadBalancerHttps(domainName: str, targetGroupArn: str, priority: int, HTTTPSListenerARN: str):
     """_summary_
 
@@ -24,6 +23,7 @@ def addRuleToLoadBalancerHttps(domainName: str, targetGroupArn: str, priority: i
         domainName (str): DNS to be matched for host in load balancer rule
         targetGroupArn (str): ARN of target group
         priority (int): random int generated
+        HTTTPSListenerARN (str): HTTPS Listener ARN
 
     Returns:
         _type_: load balancer rules
@@ -52,7 +52,7 @@ def addRuleToLoadBalancerHttps(domainName: str, targetGroupArn: str, priority: i
         print(str(e))
         return False
 
-
+# Method to add http rule to load balancer
 def addRuleToLoadBalancerHttp(domainName: str, targetGroupArn: str, priority: int, HTTPListenerARN: str):
     """_summary_
 
@@ -60,6 +60,7 @@ def addRuleToLoadBalancerHttp(domainName: str, targetGroupArn: str, priority: in
         domainName (str): DNS to be matched for host in load balancer rule
         targetGroupArn (str): ARN of target group
         priority (int): random int generated
+        HTTPListenerARN (str): HTTP Listener ARN
 
     Returns:
         _type_: load balancer rule ARN
@@ -96,11 +97,13 @@ def addRuleToLoadBalancerHttp(domainName: str, targetGroupArn: str, priority: in
         return False
 
 
+# Check if listener already exists
 def checkIfListenerExistsHTTPS(domainName: str, HTTTPSListenerARN: str):
     """`_summary_`
 
     Args:
         domainName (str): Domain name created for test env
+        HTTTPSListenerARN (str):  HTTPS Listener ARN
     """
     response = client.describe_rules(
         ListenerArn = HTTTPSListenerARN,
@@ -115,11 +118,13 @@ def checkIfListenerExistsHTTPS(domainName: str, HTTTPSListenerARN: str):
                 return True
                 
 
+# Check if listener already exists
 def checkIfListenerExistsHTTP(domainName: str, HTTPListenerARN: str):
     """`_summary_`
 
     Args:
         domainName (str): Domain name created for test env
+        HTTPListenerARN (str):  HTTP Listener ARN
     """
     response = client.describe_rules(
         ListenerArn = HTTPListenerARN,
@@ -134,6 +139,7 @@ def checkIfListenerExistsHTTP(domainName: str, HTTPListenerARN: str):
                 return True
         
         
+# Delete http rule from listener
 def deleteHTTPRuleLoadBalancer(httpRuleARN: str):
     """_summary_
 
@@ -152,7 +158,7 @@ def deleteHTTPRuleLoadBalancer(httpRuleARN: str):
         print(str(e))
         return False
 
-
+# Delete https rule from listener
 def deleteHTTPSRuleLoadBalancer(HTTPSRuleARN: str):
     """_summary_
 
@@ -172,6 +178,7 @@ def deleteHTTPSRuleLoadBalancer(HTTPSRuleARN: str):
         return False
 
 
+# Get ARN for HTTP Rule
 def getHTTPRuleARN(hostHeader: str, HTTPListenerARN: str):
     """_summary_
 
@@ -190,6 +197,7 @@ def getHTTPRuleARN(hostHeader: str, HTTPListenerARN: str):
         return False
 
 
+# Get ARN for HTTPS Rule
 def getHTTPSRuleARN(hostHeader: str, HTTTPSListenerARN: str):
     """_summary_
 
@@ -208,6 +216,3 @@ def getHTTPSRuleARN(hostHeader: str, HTTTPSListenerARN: str):
         return False
     
     
-
-
-

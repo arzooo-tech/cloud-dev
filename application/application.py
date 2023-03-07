@@ -27,8 +27,8 @@ def clone_repo(gitRepoName: str, branchName: str, githubOrgName: str):
 
     Args:
         gitRepoName (str): Name of the repo to be cloned
-        projectName (str): Name of the project in which repo is present
         branchName (str): Name of the branch
+        githubOrgName (str): Name of orgnization in github 
 
     Returns:
         _type_: Repo details
@@ -52,8 +52,18 @@ def clone_repo(gitRepoName: str, branchName: str, githubOrgName: str):
         print(e)
         return None
 
-    
+
+# Method to build docker image
 def buildDockerImage(gitRepoName: str, imageName: str,):
+    """_summary_
+
+    Args:
+        gitRepoName (str): Name of the github repo
+        imageName (str): Name of the docker image to be built
+
+    Returns:
+        _type_: docker image
+    """
     os.chdir(gitRepoName)
     
     dockerBuildcommand = "docker build -t {} .".format(imageName)
@@ -64,11 +74,17 @@ def buildDockerImage(gitRepoName: str, imageName: str,):
         logger.error(result)
         return False
     
+# Method to check if ECR Repo exists
 def checkIfECRRepoExists(ecrRepoName: str, registryId: str):
     """_summary_
     
     Args:
         ecrRepoName (str): Name of the ecr repo
+        registryId (str): AWS Account ID where image will be stored
+    
+    Returns:
+        _type_: Image exists in ECR Repo
+    
     """
     client = boto3.client("ecr", region_name= region)
     try:
@@ -81,7 +97,18 @@ def checkIfECRRepoExists(ecrRepoName: str, registryId: str):
         return False
 
     
+# Method to create ECR Repo
 def createECRRepo(ecrRepoName: str, userEmail: str, registryId: str):
+    """_summary_
+
+    Args:
+        ecrRepoName (str): Name of the ECR Repo
+        userEmail (str): User email ID to tag under ECR Repo 
+        registryId (str): AWS Account ID
+
+    Returns:
+        _type_: Created ECR Repo details
+    """
     try:
         client = boto3.client("ecr", region_name= region)
         response = client.create_repository(
@@ -101,14 +128,26 @@ def createECRRepo(ecrRepoName: str, userEmail: str, registryId: str):
         repository = response["repository"]
         ecrRepoName = repository['repositoryName']
         ecrRepoURI = repository['repositoryUri']
-        #ecrRepoARN = repository['repositoryArn']
         return ecrRepoName, ecrRepoURI
     except Exception as e:
         print(str(e))
         return False
 
 
+# Method to push docker image to AWS ECR
 def pushImageToECR(ecrRepoName: str, imageName: str):
+    """_summary_
+
+    Args:
+        ecrRepoName (str): Name of the ECR Repo
+        imageName (str): Docker image name
+
+    Raises:
+        Exception: Unable to push docker image to AWS ECR 
+
+    Returns:
+        _type_: _description_
+    """
     try:
         # get AWS ECR login token
         ecr_client = boto3.client('ecr', region_name= region)
@@ -140,11 +179,16 @@ def pushImageToECR(ecrRepoName: str, imageName: str):
         sys.exit(1)
         return False
         
+# Method to delete ECR Repo
 def deleteECRRepo(ECRrepositoryName: str, registryId: str):
     """_summary_
 
     Args:
-        repositoryName (str): ECR Repository name
+        ECRrepositoryName (str): ECR Repo name
+        registryId (str): AWS Account ID
+
+    Returns:
+        _type_: If ECR Repo deleted
     """
     try:
         ecr_client = boto3.client('ecr', region_name= region)
@@ -159,7 +203,3 @@ def deleteECRRepo(ECRrepositoryName: str, registryId: str):
         print(str(e))
         return False
     
-
-
-
-

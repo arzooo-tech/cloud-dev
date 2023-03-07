@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 
 client = boto3.client('ecs', region_name= region)
             
-            
+
+# Method to create task definition    
 def createTaskDefinition(ecsTaskDefinitionName: str, containerName: str, dockerImage: str, appName: str, containerPort: int, userEmail: str, secretName: str, awsAccountId: str, iamRoleNameForEcsTasks: str, iamExecutionRoleName: str, elasticSearchEndpointForLogs: str, elastciUserName: str, elasticPassowrd: str, region: str):
     """_summary_
 
@@ -130,7 +131,7 @@ def createTaskDefinition(ecsTaskDefinitionName: str, containerName: str, dockerI
         print(str(e))
         return False
 
-
+# Method to update/create new revision of existing ECS Task definition
 def updateTaskDefinition(ecsTaskDefinitionName: str, containerName: str, dockerImage: str, appName: str, containerPort: int, userEmail: str, secretName: str, awsAccountId: str, iamRoleNameForEcsTasks: str, iamExecutionRoleName: str, elasticSearchEndpointForLogs: str, elastciUserName: str, elasticPassowrd: str, region: str):
     """_summary_
 
@@ -249,22 +250,7 @@ def updateTaskDefinition(ecsTaskDefinitionName: str, containerName: str, dockerI
         return False
 
 
-# def deRegisterTaskDefinition(*taskDefinitionARN: str):
-#     """_summary_
-
-#     Args:
-#         taskDefinitionARN (str): ARN of task definition
-#     """
-#     try:
-#         deRegisterTaskDefinitionResponse = client.deregister_task_definition(
-#             taskDefinition = taskDefinitionARN
-#         )
-#         return True
-    
-#     except Exception as e:
-#         print(str(e))
-#         return False
-    
+# Method to deregister all revisions of task definition
 def deRegisterTaskDefinition(taskDefinitionARNs: list):
     
     """_summary_
@@ -283,6 +269,7 @@ def deRegisterTaskDefinition(taskDefinitionARNs: list):
     return True
         
 
+# Method to get all revisions of a task definition
 def listTaskDefinitionARNS(taskDefinitionName: str):
     """_summary_
 
@@ -295,4 +282,5 @@ def listTaskDefinitionARNS(taskDefinitionName: str):
     response = client.list_task_definitions(familyPrefix=taskDefinitionName)
     task_definition_arns = response['taskDefinitionArns']
     return task_definition_arns
+    
     
