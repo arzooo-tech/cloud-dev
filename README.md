@@ -24,14 +24,13 @@ Ondemand testing environment deployed on AWS ECS which can created and destroyed
 
 ## Contributing
 
-
 To Contribute in the project, refer 
    1. [Contributing.md](docs/CONTRIBUTING.md)
    2. [Changelog.md](docs/CHANGELOG.md)
 
 
 ## Authors and acknowledgment
-Somashekhar kanade
+Somashekhar Kanade
 
 
 
