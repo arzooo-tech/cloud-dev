@@ -30,7 +30,7 @@ To Contribute in the project, refer
 
 
 ## Authors and acknowledgment
-Somashekhar kanade
+Somashekhar Kanade
 
 
 
