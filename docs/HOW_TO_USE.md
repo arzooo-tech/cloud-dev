@@ -24,11 +24,11 @@
     a. `brew install python@3.11` <br />
     b. `AWS access key and AWS secret keys setup as environment variables` <br />
     c. `Kibana username and password setup as environment variables` <br />
-            1. `export kibanaUsername='*****'` <br />
-            2. `export kibanaPassword='*****'` <br />
+            <pre> 1. `export kibanaUsername='*****'` </pre> <br />
+            <pre> 2. `export kibanaPassword='*****'` </pre> <br />
     d. `github username and secret to be setup as environment variables` <br />
-            1. `export github_creds_USR='<githubusername>'` <br />
-            2. `export github_creds_PSW='<github-secret-token>'` <br />
+            <pre> 1. `export github_creds_USR='<githubusername>'` </pre> <br />
+            <pre> 2. `export github_creds_PSW='<github-secret-token>'` </pre> <br />
 3. Install the dependencies required by project by using [requirements.txt]
     `pip3 install -r requirements.txt`
 4. This is CLI Based app before running get to know the parameters to be passed by running 
