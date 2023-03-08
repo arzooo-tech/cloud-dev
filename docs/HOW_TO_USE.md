@@ -5,7 +5,7 @@
 
 1. Pre-requisites needed before running this project 
     a. `AWS Account to create resources`
-            1. `Permissions for users running this ECS, ECR, Route53, EC2, Secretmanager`
+            1. `Permissions for users running this need to have access to ECS, ECR, Route53, EC2, Secretmanager`
     b. `Application should be dockerized`
     c. `Application should be able to read environment variables from AWS Secret manager`
     d. `Elastic search and kibana endpoints for application logs`
@@ -24,6 +24,7 @@
     a. `brew install python@3.11`
     b. `AWS access key and AWS secret keys setup as environment variables`
     c. `Kibana username and password setup as environment variables`
+    d. `github username and secret to be setup as environment variables`
 3. Install the dependencies required by project by using [requirements.txt]
     `pip3 install -r requirements.txt`
 4. This is CLI Based app before running get to know the parameters to be passed by running 
