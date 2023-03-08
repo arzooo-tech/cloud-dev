@@ -18,7 +18,7 @@
 
 
 1. Clone the repository using <br />
-    `git clone <repo_url>` <br />
+    `git clone https://github.com/arzooo-tech/cloud-dev.git` <br />
     `cd cloud-dev`
     
 2. Install the python3 on machine based on system 
