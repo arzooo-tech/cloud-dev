@@ -5,18 +5,17 @@ import sys
 import logging
 import random
 
-region = 'ap-south-1'
 
 # Define the custom logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # define the boto client
-client = boto3.client('elbv2', region_name= region)
+#client = boto3.client('elbv2', region_name= region)
 
 
 # Method to add https rule to load balancer
-def addRuleToLoadBalancerHttps(domainName: str, targetGroupArn: str, priority: int, HTTTPSListenerARN: str):
+def addRuleToLoadBalancerHttps(domainName: str, targetGroupArn: str, priority: int, HTTTPSListenerARN: str, region: str):
     """_summary_
 
     Args:
@@ -28,6 +27,7 @@ def addRuleToLoadBalancerHttps(domainName: str, targetGroupArn: str, priority: i
     Returns:
         _type_: load balancer rules
     """
+    client = boto3.client('elbv2', region_name= region)
     try:
         response = client.create_rule(
             ListenerArn = HTTTPSListenerARN,
@@ -53,7 +53,7 @@ def addRuleToLoadBalancerHttps(domainName: str, targetGroupArn: str, priority: i
         return False
 
 # Method to add http rule to load balancer
-def addRuleToLoadBalancerHttp(domainName: str, targetGroupArn: str, priority: int, HTTPListenerARN: str):
+def addRuleToLoadBalancerHttp(domainName: str, targetGroupArn: str, priority: int, HTTPListenerARN: str, region: str):
     """_summary_
 
     Args:
@@ -65,6 +65,7 @@ def addRuleToLoadBalancerHttp(domainName: str, targetGroupArn: str, priority: in
     Returns:
         _type_: load balancer rule ARN
     """
+    client = boto3.client('elbv2', region_name= region)
     try:
         response = client.create_rule(
             ListenerArn = HTTPListenerARN,
@@ -98,13 +99,14 @@ def addRuleToLoadBalancerHttp(domainName: str, targetGroupArn: str, priority: in
 
 
 # Check if listener already exists
-def checkIfListenerExistsHTTPS(domainName: str, HTTTPSListenerARN: str):
+def checkIfListenerExistsHTTPS(domainName: str, HTTTPSListenerARN: str, region: str):
     """`_summary_`
 
     Args:
         domainName (str): Domain name created for test env
         HTTTPSListenerARN (str):  HTTPS Listener ARN
     """
+    client = boto3.client('elbv2', region_name= region)
     response = client.describe_rules(
         ListenerArn = HTTTPSListenerARN,
     )
@@ -119,13 +121,14 @@ def checkIfListenerExistsHTTPS(domainName: str, HTTTPSListenerARN: str):
                 
 
 # Check if listener already exists
-def checkIfListenerExistsHTTP(domainName: str, HTTPListenerARN: str):
+def checkIfListenerExistsHTTP(domainName: str, HTTPListenerARN: str, region: str):
     """`_summary_`
 
     Args:
         domainName (str): Domain name created for test env
         HTTPListenerARN (str):  HTTP Listener ARN
     """
+    client = boto3.client('elbv2', region_name= region)
     response = client.describe_rules(
         ListenerArn = HTTPListenerARN,
     )
@@ -140,12 +143,13 @@ def checkIfListenerExistsHTTP(domainName: str, HTTPListenerARN: str):
         
         
 # Delete http rule from listener
-def deleteHTTPRuleLoadBalancer(httpRuleARN: str):
+def deleteHTTPRuleLoadBalancer(httpRuleARN: str, region: str):
     """_summary_
 
     Args:
         ruleARN (str): Rule ARN of load balancer
     """
+    client = boto3.client('elbv2', region_name= region)
     try:
         response = client.delete_rule(
             RuleArn = httpRuleARN
@@ -159,12 +163,13 @@ def deleteHTTPRuleLoadBalancer(httpRuleARN: str):
         return False
 
 # Delete https rule from listener
-def deleteHTTPSRuleLoadBalancer(HTTPSRuleARN: str):
+def deleteHTTPSRuleLoadBalancer(HTTPSRuleARN: str, region: str):
     """_summary_
 
     Args:
         ruleARN (str): Rule ARN of load balancer
     """
+    client = boto3.client('elbv2', region_name= region)
     try:
         response = client.delete_rule(
             RuleArn = HTTPSRuleARN
@@ -179,7 +184,7 @@ def deleteHTTPSRuleLoadBalancer(HTTPSRuleARN: str):
 
 
 # Get ARN for HTTP Rule
-def getHTTPRuleARN(hostHeader: str, HTTPListenerARN: str):
+def getHTTPRuleARN(hostHeader: str, HTTPListenerARN: str, region: str):
     """_summary_
 
     Args:
@@ -188,6 +193,7 @@ def getHTTPRuleARN(hostHeader: str, HTTPListenerARN: str):
     Returns:
         _type_: _description_
     """
+    client = boto3.client('elbv2', region_name= region)
     listener_rules = client.describe_rules(ListenerArn=HTTPListenerARN)['Rules']
     filtered_rules = [r for r in listener_rules if r['Conditions'] and r['Conditions'][0]['Values'][0] == hostHeader]
     try:
@@ -198,7 +204,7 @@ def getHTTPRuleARN(hostHeader: str, HTTPListenerARN: str):
 
 
 # Get ARN for HTTPS Rule
-def getHTTPSRuleARN(hostHeader: str, HTTTPSListenerARN: str):
+def getHTTPSRuleARN(hostHeader: str, HTTTPSListenerARN: str, region: str):
     """_summary_
 
     Args:
@@ -207,6 +213,7 @@ def getHTTPSRuleARN(hostHeader: str, HTTTPSListenerARN: str):
     Returns:
         _type_: _description_
     """
+    client = boto3.client('elbv2', region_name= region)
     listener_rules = client.describe_rules(ListenerArn=HTTTPSListenerARN)['Rules']
     filtered_rules = [r for r in listener_rules if r['Conditions'] and r['Conditions'][0]['Values'][0] == hostHeader]
     try:

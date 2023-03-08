@@ -4,13 +4,12 @@ import boto3
 import logging
 
 
-region = 'ap-south-1'
-
+# Logger configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-client = boto3.client('ecs', region_name= region)
+#client = boto3.client('ecs', region_name= region)
             
 
 # Method to create task definition    
@@ -36,6 +35,7 @@ def createTaskDefinition(ecsTaskDefinitionName: str, containerName: str, dockerI
     Returns:
         _type_: _description_
     """
+    client = boto3.client('ecs', region_name= region)
     dockerImage = dockerImage + ':latest'
     try:
         response = client.register_task_definition(
@@ -154,6 +154,7 @@ def updateTaskDefinition(ecsTaskDefinitionName: str, containerName: str, dockerI
     Returns:
         task definition arn (str): task definition arn which is created
     """
+    client = boto3.client('ecs', region_name= region)
     dockerImage = dockerImage + ':latest'
     try:
         response = client.register_task_definition(
@@ -251,13 +252,14 @@ def updateTaskDefinition(ecsTaskDefinitionName: str, containerName: str, dockerI
 
 
 # Method to deregister all revisions of task definition
-def deRegisterTaskDefinition(taskDefinitionARNs: list):
+def deRegisterTaskDefinition(taskDefinitionARNs: list, region: str):
     
     """_summary_
 
     Args:
         taskDefinitionARN (str): ARN of task definition
     """
+    client = boto3.client('ecs', region_name= region)
     for taskDefinitionARN in taskDefinitionARNs:
         try:
             deRegisterTaskDefinitionResponse = client.deregister_task_definition(
@@ -270,7 +272,7 @@ def deRegisterTaskDefinition(taskDefinitionARNs: list):
         
 
 # Method to get all revisions of a task definition
-def listTaskDefinitionARNS(taskDefinitionName: str):
+def listTaskDefinitionARNS(taskDefinitionName: str, region: str):
     """_summary_
 
     Args:
@@ -279,6 +281,7 @@ def listTaskDefinitionARNS(taskDefinitionName: str):
     Returns:
         _type_: _description_
     """
+    client = boto3.client('ecs', region_name= region)
     response = client.list_task_definitions(familyPrefix=taskDefinitionName)
     task_definition_arns = response['taskDefinitionArns']
     return task_definition_arns

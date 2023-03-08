@@ -4,17 +4,16 @@ import boto3
 import logging
 
 
-region = 'ap-south-1'
 
 # Define the custom logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # define the boto client
-client = boto3.client('elbv2', region_name= region)
+#client = boto3.client('elbv2', region_name= region)
 
 # Method to create target group
-def createTargetGroup(targetGroupName: str, port: int, healthCheckPath: str, userEmail: str, vpcId: str):
+def createTargetGroup(targetGroupName: str, port: int, healthCheckPath: str, userEmail: str, vpcId: str, region: str):
     """ Method to create target group
     
     Args:
@@ -28,6 +27,7 @@ def createTargetGroup(targetGroupName: str, port: int, healthCheckPath: str, use
         task definition name(str): Name of the target group created
         
     """
+    client = boto3.client('elbv2', region_name= region)
     try:
         response = client.create_target_group(
             Name = targetGroupName,
@@ -76,12 +76,13 @@ def createTargetGroup(targetGroupName: str, port: int, healthCheckPath: str, use
 
 
 # Method to get ARN of target group
-def getTargetGroupARN(targetGroupName: str):
+def getTargetGroupARN(targetGroupName: str, region: str):
     """_summary_
 
     Args:
         targetGroupName (str): Name of the target group
     """
+    client = boto3.client('elbv2', region_name= region)
     try:
         response = client.describe_target_groups(
         Names=[targetGroupName]
@@ -94,12 +95,13 @@ def getTargetGroupARN(targetGroupName: str):
     
 
 # Method to delete target group    
-def deleteTargetGroup(targetGroupARN: str):
+def deleteTargetGroup(targetGroupARN: str, region: str):
     """_summary_
 
     Args:
         targetGroupARN (str): ARN of target group
     """
+    client = boto3.client('elbv2', region_name= region)
     try:
         deleteTargetGroupResponse = client.delete_target_group(
             TargetGroupArn = targetGroupARN

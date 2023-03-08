@@ -9,8 +9,7 @@ import base64
 import docker
 
 
-region = 'ap-south-1'
-
+# Logger config
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -75,7 +74,7 @@ def buildDockerImage(gitRepoName: str, imageName: str,):
         return False
     
 # Method to check if ECR Repo exists
-def checkIfECRRepoExists(ecrRepoName: str, registryId: str):
+def checkIfECRRepoExists(ecrRepoName: str, registryId: str, region: str):
     """_summary_
     
     Args:
@@ -98,7 +97,7 @@ def checkIfECRRepoExists(ecrRepoName: str, registryId: str):
 
     
 # Method to create ECR Repo
-def createECRRepo(ecrRepoName: str, userEmail: str, registryId: str):
+def createECRRepo(ecrRepoName: str, userEmail: str, registryId: str, region: str):
     """_summary_
 
     Args:
@@ -135,7 +134,7 @@ def createECRRepo(ecrRepoName: str, userEmail: str, registryId: str):
 
 
 # Method to push docker image to AWS ECR
-def pushImageToECR(ecrRepoName: str, imageName: str):
+def pushImageToECR(ecrRepoName: str, imageName: str, region: str):
     """_summary_
 
     Args:
@@ -180,7 +179,7 @@ def pushImageToECR(ecrRepoName: str, imageName: str):
         return False
         
 # Method to delete ECR Repo
-def deleteECRRepo(ECRrepositoryName: str, registryId: str):
+def deleteECRRepo(ECRrepositoryName: str, registryId: str, region: str):
     """_summary_
 
     Args:

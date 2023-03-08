@@ -4,17 +4,16 @@ import boto3
 import logging
 
 
-region = 'ap-south-1'
-
+# Logger configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-client = boto3.client('route53', region_name= region, )
+#client = boto3.client('route53', region_name= region )
 
 
 # Method to create route53 record
-def createR53Entry(hostName: str, domainNameOfHostedZone: str, HostedZoneId: str, loadBalancerDNSEndpoint: str, AWSHostedZoneIDForLoadbalancerRegionBasis: str):
+def createR53Entry(hostName: str, domainNameOfHostedZone: str, HostedZoneId: str, loadBalancerDNSEndpoint: str, AWSHostedZoneIDForLoadbalancerRegionBasis: str, region: str):
     """_summary_
 
     Args:
@@ -28,6 +27,7 @@ def createR53Entry(hostName: str, domainNameOfHostedZone: str, HostedZoneId: str
         _type_: Route53 record details
     """
     domainName = hostName + '.' + domainNameOfHostedZone
+    client = boto3.client('route53', region_name= region)
     try:
         response = client.change_resource_record_sets(
             HostedZoneId=HostedZoneId,
@@ -56,7 +56,7 @@ def createR53Entry(hostName: str, domainNameOfHostedZone: str, HostedZoneId: str
         return False
     
 # Method to delete route53 entry
-def DeleteR53Entry(hostName: str, domainNameOfHostedZone: str, HostedZoneId: str, loadBalancerDNSEndpoint: str, AWSHostedZoneIDForLoadbalancerRegionBasis: str):
+def DeleteR53Entry(hostName: str, domainNameOfHostedZone: str, HostedZoneId: str, loadBalancerDNSEndpoint: str, AWSHostedZoneIDForLoadbalancerRegionBasis: str, region: str):
     """_summary_
 
     Args:
@@ -70,6 +70,7 @@ def DeleteR53Entry(hostName: str, domainNameOfHostedZone: str, HostedZoneId: str
         _type_: Route53 record deletion 
     """
     domainName = hostName + '.' + domainNameOfHostedZone
+    client = boto3.client('route53', region_name= region)
     try:
         response = client.change_resource_record_sets(
             HostedZoneId=HostedZoneId,
@@ -99,7 +100,7 @@ def DeleteR53Entry(hostName: str, domainNameOfHostedZone: str, HostedZoneId: str
         return False
 
 # Method to check if route53 record exists
-def checkIfRouteRecordExists(DomainName: str, HostedZoneId: str):
+def checkIfRouteRecordExists(DomainName: str, HostedZoneId: str, region: str):
     
     """_summary_
 
@@ -107,7 +108,7 @@ def checkIfRouteRecordExists(DomainName: str, HostedZoneId: str):
         DomainName (str): DNS Name to be checked which exists
         HostedZoneId (str):  Hosted Zone ID
     """
-
+    client = boto3.client('route53', region_name= region)
     response = client.list_resource_record_sets(
         HostedZoneId=HostedZoneId,
         StartRecordName=DomainName,

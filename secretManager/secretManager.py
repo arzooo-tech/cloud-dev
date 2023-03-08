@@ -2,14 +2,12 @@ import boto3
 from botocore.exceptions import ClientError
 
 
-region = 'ap-south-1'
-
 # Create a Secrets Manager client
-client = boto3.client('secretsmanager', region_name= region)
+#client = boto3.client('secretsmanager', region_name= region)
 
 
 # Method to create new secret by inheriting from existing secret
-def getAndCreateSecret(sourceSecretName: str, destSecretName: str, userEmail: str):
+def getAndCreateSecret(sourceSecretName: str, destSecretName: str, userEmail: str, region: str):
     """_summary_
 
     Args:
@@ -17,6 +15,7 @@ def getAndCreateSecret(sourceSecretName: str, destSecretName: str, userEmail: st
         destSecretName (str): Name of the secret to copy to
         userEmail (str): Email id of the user for tagging resources for tracking
     """
+    client = boto3.client('secretsmanager', region_name= region)
     try:
         response = client.get_secret_value(SecretId=sourceSecretName)
     except ClientError as e:
@@ -48,12 +47,13 @@ def getAndCreateSecret(sourceSecretName: str, destSecretName: str, userEmail: st
 
 
 # Method to delete secret from secret manager
-def deleteSecret(secretName: str):
+def deleteSecret(secretName: str, region: str):
     """_summary_
 
     Args:
         secretName (str): Name of the secret to be deleted
     """
+    client = boto3.client('secretsmanager', region_name= region)
     try:
         response = client.delete_secret(
             SecretId = secretName,

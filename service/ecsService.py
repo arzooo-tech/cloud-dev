@@ -4,17 +4,15 @@ import boto3
 import logging
 
 
-region = 'ap-south-1'
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-client = boto3.client('ecs', region_name= region)
+#client = boto3.client('ecs', region_name= region)
 
 
 # Method for check is ecs service exists using service ARNs
-def checkIfServiceExists(ecsServiceName: str, ecsClusterName: str, region: str, awsAccountID: str ):
+def checkIfServiceExists(ecsServiceName: str, ecsClusterName: str, region: str, awsAccountID: str):
     """_summary_
 
     Args:
@@ -26,6 +24,7 @@ def checkIfServiceExists(ecsServiceName: str, ecsClusterName: str, region: str, 
     Returns:
         _type_: If ECS Service exists
     """
+    client = boto3.client('ecs', region_name= region)
     response = client.list_services(
         cluster = ecsClusterName,
         launchType = 'FARGATE'
@@ -38,7 +37,7 @@ def checkIfServiceExists(ecsServiceName: str, ecsClusterName: str, region: str, 
         return False
 
 # Method to create ecs service
-def createService(ecsServiceName: str, taskDefinitionName: str, targetGroupArn: str, containerName: str, containerPort: int, userEmail: str, ecsClusterName: str, subnetID: str, securityGroupID: str):
+def createService(ecsServiceName: str, taskDefinitionName: str, targetGroupArn: str, containerName: str, containerPort: int, userEmail: str, ecsClusterName: str, subnetID: str, securityGroupID: str, region: str):
     """_summary_
 
     Args:
@@ -54,6 +53,7 @@ def createService(ecsServiceName: str, taskDefinitionName: str, targetGroupArn: 
     Returns:
         _type_: ECS service details
     """
+    client = boto3.client('ecs', region_name= region)
     try:
         response = client.create_service(
             cluster = ecsClusterName,
@@ -101,13 +101,14 @@ def createService(ecsServiceName: str, taskDefinitionName: str, targetGroupArn: 
         return False
 
 # Method to delete ECS Service
-def deleteEcsService(serviceName: str, ecsClusterName: str):
+def deleteEcsService(serviceName: str, ecsClusterName: str, region: str):
     """_summary_
 
     Args:
         serviceName (str): Name of the service to be deleted
         ecsClusterName (str): ECS Cluster name
     """
+    client = boto3.client('ecs', region_name= region)
     try:
         response = client.delete_service(
             cluster = ecsClusterName,
@@ -122,13 +123,14 @@ def deleteEcsService(serviceName: str, ecsClusterName: str):
         return False
 
 # Method to update existing ECS Service
-def updateECSService(ecsServiceName: str, taskDefinitionARN: str, ecsClusterName: str):
+def updateECSService(ecsServiceName: str, taskDefinitionARN: str, ecsClusterName: str, region: str):
     """_summary_
 
     Args:
         serviceName (str): Name of the service to be updated
         taskDefinitionARN (str): ARN of the task definition to be updated
     """
+    client = boto3.client('ecs', region_name= region)
     try:
         response = client.update_service(
             cluster = ecsClusterName,

@@ -125,7 +125,7 @@ def main():
             logger.info(" Service does not exist proceeding with creating all ECS resources ")
             
         # Check if ECR Repo exists 
-        checkIfECRRepoExistsResponse = application.checkIfECRRepoExists(args.appName, args.awsAccountID)
+        checkIfECRRepoExistsResponse = application.checkIfECRRepoExists(args.appName, args.awsAccountID, args.region)
         if checkIfECRRepoExistsResponse:
             logger.error(" ECR Repo already exists with name of {} please consider using the same exiting".format(args.appName))
             sys.exit(1)
@@ -134,7 +134,7 @@ def main():
         
         # Check if route 53 record exist 
         domainName = userName + '-' + args.appName 
-        checkIfRouteRecordExistsResponse = route53.checkIfRouteRecordExists(domainName, args.HostedZoneId)
+        checkIfRouteRecordExistsResponse = route53.checkIfRouteRecordExists(domainName, args.HostedZoneId, args.region)
         if checkIfRouteRecordExistsResponse:
             logger.error(" DNS already exists with same name exiting")
             sys.exit(1)
@@ -149,10 +149,10 @@ def main():
             dockerImageBuild = application.buildDockerImage(args.gitRepoName, args.appName)
             if dockerImageBuild:
                 logger.info(" Image built with name of {}".format(args.appName))
-                ecrRepoName, ecrRepoURI = application.createECRRepo(args.appName, args.email, args.awsAccountID)
+                ecrRepoName, ecrRepoURI = application.createECRRepo(args.appName, args.email, args.awsAccountID, args.region)
                 if ecrRepoName:
                     logger.info(" ECR repo created with name of {} ".format(ecrRepoName))
-                    imagePushedToECR = application.pushImageToECR(ecrRepoName, args.appName)
+                    imagePushedToECR = application.pushImageToECR(ecrRepoName, args.appName, args.region)
                     if imagePushedToECR:
                         logger.info(" Pushed image to ecr")
                     else:
@@ -168,7 +168,7 @@ def main():
         
         # Inherit and create new secret in secret manager
         #sourceSecretName = args.sourceSecretName    # This will be sent as parameter when all the services will be moved to secret manager
-        createNewSecretSecretManager = secretManager.getAndCreateSecret(args.secretName, ecsTaskDefinitionName, args.email)
+        createNewSecretSecretManager = secretManager.getAndCreateSecret(args.secretName, ecsTaskDefinitionName, args.email, args.region)
         if createNewSecretSecretManager:
             logger.info(" Secret has been created with name of {} in secret maanger".format(createNewSecretSecretManager))
         else:
@@ -186,7 +186,7 @@ def main():
         targetGroupNameFull = userName + '-' + args.appName             # Target group will be created based on username and app name being passed 
         targetGroupNameShort = targetGroupNameFull[:31]                 # Target group names are allowed to have only 32 characters long hence restricting it to 32 characters 
         targetGroupNameShort = re.sub('[^a-zA-Z0-9 \n\.]', '', targetGroupNameShort)    # Remove any special characters from target as special character at the end is not allowed 
-        createTargetGroupResponse = targetGroup.createTargetGroup(targetGroupNameShort, args.containerPort, args.healthCheckPath, args.email, args.vpcId)
+        createTargetGroupResponse = targetGroup.createTargetGroup(targetGroupNameShort, args.containerPort, args.healthCheckPath, args.email, args.vpcId, args.region)
         targetGroupARN, targetGroupNameShort  = createTargetGroupResponse[0], createTargetGroupResponse[1]
         if createTargetGroupResponse:
             logger.info(" Target group has been created with name of {} ".format(targetGroupNameShort))
@@ -197,7 +197,7 @@ def main():
         # create R53 Entry
         domainName = targetGroupNameFull
         FullDomainName = domainName + '.' + args.domainNameOfHostedZone
-        createRoute53Response = route53.createR53Entry(domainName, args.domainNameOfHostedZone, args.HostedZoneId, args.loadBalancerDNSEndpoint, args.AWSHostedZoneIDForLoadbalancerRegionBasis)
+        createRoute53Response = route53.createR53Entry(domainName, args.domainNameOfHostedZone, args.HostedZoneId, args.loadBalancerDNSEndpoint, args.AWSHostedZoneIDForLoadbalancerRegionBasis, args.region)
         if createRoute53Response:
             logger.info(" Domain has been created and the URL is {}".format(FullDomainName))
         else:
@@ -207,30 +207,30 @@ def main():
         # Add http and https in listener of load balancer generating and picking random int to assign priority it should not matter as it is host based mapping in load balancer and not PATH Based
         randomPriorityHttps = random.randint(1,1000)
         randomPriorityHttp = random.randint(1001,2000)
-        checkIfHTTPSListenerxists = loadBalancer.checkIfListenerExistsHTTPS(FullDomainName, args.HTTTPSListenerARN, )
+        checkIfHTTPSListenerxists = loadBalancer.checkIfListenerExistsHTTPS(FullDomainName, args.HTTTPSListenerARN, args.region)
         if checkIfHTTPSListenerxists == False:
             logger.error(" Host entry already exists with {} ".format(FullDomainName))
             sys.exit(1)
         else:
-            AddListenerHTTPSResponseARN = loadBalancer.addRuleToLoadBalancerHttps(FullDomainName, targetGroupARN, randomPriorityHttps, args.HTTTPSListenerARN)
+            AddListenerHTTPSResponseARN = loadBalancer.addRuleToLoadBalancerHttps(FullDomainName, targetGroupARN, randomPriorityHttps, args.HTTTPSListenerARN, args.region)
             if AddListenerHTTPSResponseARN:
                 logger.info(" DNS entry has been added in load balancer listener for https")
             else:
                 logger.error(" Unable to add entry in listener in load balancer")
                 
-            checkIfHTTPListenerExists = loadBalancer.checkIfListenerExistsHTTP(FullDomainName, args.HTTPListenerARN)
+            checkIfHTTPListenerExists = loadBalancer.checkIfListenerExistsHTTP(FullDomainName, args.HTTPListenerARN, args.region)
             if checkIfHTTPListenerExists == False:
                 logger.error(" Host entry already exists with same name {} ".format(FullDomainName))
                 sys.exit(1)
             else:
-                AddListenerHTTPResponseARN = loadBalancer.addRuleToLoadBalancerHttp(FullDomainName, targetGroupARN, randomPriorityHttp, args.HTTPListenerARN)
+                AddListenerHTTPResponseARN = loadBalancer.addRuleToLoadBalancerHttp(FullDomainName, targetGroupARN, randomPriorityHttp, args.HTTPListenerARN, args.region)
                 if AddListenerHTTPResponseARN:
                     logger.info(" DNS entry has been added in load balancer listener for http")
                 else:
                     logger.error(" Unable to add DNS in load balancer for http please check for error")
     
         # Create ecs service 
-        createECSServiceResponse = ecsService.createService(ecsTaskDefinitionName, ecsTaskDefinitionName, targetGroupARN, args.appName, args.containerPort, args.email, args.ecsClusterName, args.subnetID, args.securityGroupID)
+        createECSServiceResponse = ecsService.createService(ecsTaskDefinitionName, ecsTaskDefinitionName, targetGroupARN, args.appName, args.containerPort, args.email, args.ecsClusterName, args.subnetID, args.securityGroupID, args.region)
         ecsServiceName , ecsServiceARN = createECSServiceResponse[0], createECSServiceResponse[1]
         try:
             if createECSServiceResponse:
@@ -258,18 +258,18 @@ def main():
             logger.error(" Health check failed for URL {} please check kibana for error".format(FullDomainName))
             
             # Delete ecs service
-            ecsServiceDeleteResponse = ecsService.deleteEcsService(ecsServiceName, args.ecsClusterName)
+            ecsServiceDeleteResponse = ecsService.deleteEcsService(ecsServiceName, args.ecsClusterName, args.region)
             if ecsServiceDeleteResponse:
                 logger.info(" ECS service {} deleted ".format(ecsServiceName))
             else:
                 logger.error(" Unable to delete ECS service {}".format(ecsServiceName))
                 
             # Delete http rule from load balancer
-            deleteRuleHTTPResponse = loadBalancer.deleteHTTPRuleLoadBalancer(AddListenerHTTPResponseARN)
+            deleteRuleHTTPResponse = loadBalancer.deleteHTTPRuleLoadBalancer(AddListenerHTTPResponseARN, args.region)
             logger.info(" Deleted entry from load balancer for http")
             if deleteRuleHTTPResponse:
             # Delete https rule from load balancer
-                deleteRuleHTTPSResponse = loadBalancer.deleteHTTPSRuleLoadBalancer(AddListenerHTTPSResponseARN)
+                deleteRuleHTTPSResponse = loadBalancer.deleteHTTPSRuleLoadBalancer(AddListenerHTTPSResponseARN, args.region)
                 if deleteRuleHTTPSResponse:
                     logger.info(" Deleted entry from load balancer for https")
                 else:
@@ -278,41 +278,41 @@ def main():
                 logger.error(" Unable to delete rule from load balancer for http")
                     
             # Delete target group 
-            deleteTargetGroup = targetGroup.deleteTargetGroup(targetGroupARN)
+            deleteTargetGroup = targetGroup.deleteTargetGroup(targetGroupARN, args.region)
             if deleteTargetGroup:
                 logger.info(" Deleted target group ")
             else:
                 logger.error(" Unable to delete target group ")
                     
             # Delete Route53 entry
-            deleteR53EntryResponse = route53.DeleteR53Entry(domainName, args.domainNameOfHostedZone, args.HostedZoneId, args.loadBalancerDNSEndpoint, args.AWSHostedZoneIDForLoadbalancerRegionBasis)
+            deleteR53EntryResponse = route53.DeleteR53Entry(domainName, args.domainNameOfHostedZone, args.HostedZoneId, args.loadBalancerDNSEndpoint, args.AWSHostedZoneIDForLoadbalancerRegionBasis, args.region)
             if deleteR53EntryResponse:
                 logger.info(" Deleted r53 entry {}".format(FullDomainName))
             else:
                 logger.error(" Unable to delete r53 entry {}".format(FullDomainName))
                 
             # Delete secret from secret manager        
-            DeleteSecretFromSecretManagerResponse = secretManager.deleteSecret(secretName)
+            DeleteSecretFromSecretManagerResponse = secretManager.deleteSecret(secretName, args.region)
             if DeleteSecretFromSecretManagerResponse:
                 logger.info(" Secret {} deleted from secret manager ".format(secretName))
             else:
                 logger.error(" Unable to delete secret please check for error")
             
             #List all revisions of Taskdefinitions
-            listTaskDefinitionARNS = taskDefinition.listTaskDefinitionARNS(ecsTaskDefinitionName)
+            listTaskDefinitionARNS = taskDefinition.listTaskDefinitionARNS(ecsTaskDefinitionName, args.region)
             if (len(listTaskDefinitionARNS)) == 0:
                 logger.info(" No task definition matched with name of {} ".format(ecsTaskDefinitionName))
             else:
                 logger.info(" Found task definitions with name of {} de-registering all the revisions".format(ecsTaskDefinitionName))   
             # De-Register task definition 
-            deRegisterTaskDefinitionResponse = taskDefinition.deRegisterTaskDefinition(listTaskDefinitionARNS)
+            deRegisterTaskDefinitionResponse = taskDefinition.deRegisterTaskDefinition(listTaskDefinitionARNS, args.region)
             if deRegisterTaskDefinitionResponse:
                 logger.info(" Task definition de-registered")
             else:
                 logger.error(" Unble to de-register task definition")
             
             # Delete ECR Repo
-            deleteECRRepoResponse = application.deleteECRRepo(args.appName, args.awsAccountID)
+            deleteECRRepoResponse = application.deleteECRRepo(args.appName, args.awsAccountID, args.region)
             if deleteECRRepoResponse:
                 logger.info(" ECR repo deleted")
             else:
@@ -336,7 +336,7 @@ def main():
             dockerImageBuild = application.buildDockerImage(args.gitRepoName, args.appName)
             if dockerImageBuild:
                 logger.info(" Image built with name of {}".format(args.appName))
-                imagePushedToECR = application.pushImageToECR(args.appName, args.appName)
+                imagePushedToECR = application.pushImageToECR(args.appName, args.appName, args.region)
                 if imagePushedToECR:
                     logger.info(" Pushed image to ECR")
                 else:
@@ -358,7 +358,7 @@ def main():
             logger.error(" Unable to create task definition please check for error")
             
         # Update ecs service with new task definition revision 
-        updateECSServiceResponse = ecsService.updateECSService(updatedtaskDefinitionName, updatedtaskDefinitionARN, args.ecsClusterName)
+        updateECSServiceResponse = ecsService.updateECSService(updatedtaskDefinitionName, updatedtaskDefinitionARN, args.ecsClusterName, args.region)
         if updateECSServiceResponse:
             logger.info(" ECS Service {} is updated with new task definition revision".format(updatedtaskDefinitionName))
         else:
@@ -379,51 +379,51 @@ def main():
             logger.error(" Unable to delete ECS service {}".format(ecsServiceName))
         
         # Delete route53 record 
-        deleteR53EntryResponse = route53.DeleteR53Entry(domainName, args.domainNameOfHostedZone, args.HostedZoneId, args.loadBalancerDNSEndpoint, args.AWSHostedZoneIDForLoadbalancerRegionBasis)
+        deleteR53EntryResponse = route53.DeleteR53Entry(domainName, args.domainNameOfHostedZone, args.HostedZoneId, args.loadBalancerDNSEndpoint, args.AWSHostedZoneIDForLoadbalancerRegionBasis, args.region)
         if deleteR53EntryResponse:
             logger.info(" Deleted r53 entry {}".format(FullDomainName))
         else:
             logger.error(" Unable to delete r53 entry {}".format(FullDomainName))
         
         # Delete ECR Repo 
-        deleteECRRepoResponse = application.deleteECRRepo(args.appName, args.awsAccountID)
+        deleteECRRepoResponse = application.deleteECRRepo(args.appName, args.awsAccountID, args.region)
         if deleteECRRepoResponse:
             logger.info(" ECR repo deleted")
         else:
             logger.error(" Unable to delete ECR Repo")
         
         # De-register task definition 
-        listTaskDefinitionARNS = taskDefinition.listTaskDefinitionARNS(ecsTaskDefinitionName)
+        listTaskDefinitionARNS = taskDefinition.listTaskDefinitionARNS(ecsTaskDefinitionName, args.region)
         if (len(listTaskDefinitionARNS)) == 0:
             logger.info(" No task definition matched with name of {} ".format(ecsTaskDefinitionName))
         else:
             logger.info(" Found task definitions with name of {} de-registering all the revisions".format(ecsTaskDefinitionName))
-            deregisterTaskDefinisionRevs = taskDefinition.deRegisterTaskDefinition(listTaskDefinitionARNS)
+            deregisterTaskDefinisionRevs = taskDefinition.deRegisterTaskDefinition(listTaskDefinitionARNS, args.region)
             if deregisterTaskDefinisionRevs:
                 logger.info(" Task definition have been de-registered")
             else:
                 logger.error(" Unable to de-register task definition ")    
             
         # Delete secret from secret manager        
-        DeleteSecretFromSecretManagerResponse = secretManager.deleteSecret(secretName)
+        DeleteSecretFromSecretManagerResponse = secretManager.deleteSecret(secretName, args.region)
         if DeleteSecretFromSecretManagerResponse:
             logger.info(" Secret {} deleted from secret manager ".format(secretName))
         else:
             logger.error(" Unable to delete secret please check for error")
         
         # get and delete http rules arn from load balancer listener
-        getHTTPRuleARNResponse = loadBalancer.getHTTPRuleARN(FullDomainName, args.HTTPListenerARN)
+        getHTTPRuleARNResponse = loadBalancer.getHTTPRuleARN(FullDomainName, args.HTTPListenerARN, args.region)
         if getHTTPRuleARNResponse:
-            deleteHTTPRuleEntryResponse = loadBalancer.deleteHTTPRuleLoadBalancer(getHTTPRuleARNResponse)
+            deleteHTTPRuleEntryResponse = loadBalancer.deleteHTTPRuleLoadBalancer(getHTTPRuleARNResponse, args.region)
             if deleteHTTPRuleEntryResponse:
                 logger.info(" Deleted http rule from load balancer")
             else:
                 logger.error(" Unable to delete https rule from load balancer")
             
         # get and delete https rules arn from load balancer listener
-        getHTTPSRuleARNResponse = loadBalancer.getHTTPSRuleARN(FullDomainName, args.HTTTPSListenerARN)
+        getHTTPSRuleARNResponse = loadBalancer.getHTTPSRuleARN(FullDomainName, args.HTTTPSListenerARN, args.region)
         if getHTTPSRuleARNResponse:
-            deleteHTTPSRuleEntryResponse = loadBalancer.deleteHTTPSRuleLoadBalancer(getHTTPSRuleARNResponse)
+            deleteHTTPSRuleEntryResponse = loadBalancer.deleteHTTPSRuleLoadBalancer(getHTTPSRuleARNResponse, args.region)
             if deleteHTTPSRuleEntryResponse:
                 logger.info(" Deleted https rule from load balancer")
             else:
@@ -433,9 +433,9 @@ def main():
         targetGroupNameFull = userName + '-' + args.appName
         targetGroupNameShort = targetGroupNameFull[:31]
         targetGroupNameShort = re.sub('[^a-zA-Z0-9 \n\.]', '', targetGroupNameShort)
-        getTargetGroupARN = targetGroup.getTargetGroupARN(targetGroupNameShort)
+        getTargetGroupARN = targetGroup.getTargetGroupARN(targetGroupNameShort, args.region)
         if getTargetGroupARN:
-            deleteTargetGroupResponse = targetGroup.deleteTargetGroup(getTargetGroupARN)
+            deleteTargetGroupResponse = targetGroup.deleteTargetGroup(getTargetGroupARN, args.region)
             if deleteTargetGroupResponse:
                 logger.info(" Target group deleted")
             else:
