@@ -23,6 +23,8 @@
 
     a. `brew install python@3.11` <br />
     b. `AWS access key and AWS secret keys setup as environment variables` <br />
+            <pre> 1. `export export AWS_ACCESS_KEY_ID='*****'` </pre> <br/>
+            <pre> 2. `export AWS_SECRET_ACCESS_KEY='*****'` </pre> <br/>
     c. `Kibana username and password setup as environment variables` <br />
             <pre> 1. `export kibanaUsername='*****'` </pre> <br />
             <pre> 2. `export kibanaPassword='*****'` </pre> <br />
