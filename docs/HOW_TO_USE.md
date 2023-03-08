@@ -17,7 +17,7 @@
     j. `Hosted zone in AWS Route53` <br />
 
 
-1. Clone the repository using 
+1. Clone the repository using <br />
     `git clone <repo_url>` <br />
     `cd cloud-dev`
     
