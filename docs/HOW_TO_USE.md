@@ -4,31 +4,31 @@
 ### On Mac Machine
 
 1. Pre-requisites needed before running this project 
-    a. `AWS Account to create resources`
-            1. `Permissions for users running this need to have access to ECS, ECR, Route53, EC2, Secretmanager`
-    b. `Application should be dockerized`
-    c. `Application should be able to read environment variables from AWS Secret manager`
-    d. `Elastic search and kibana endpoints for application logs`
-    e. `Elastic search and kibana credentials for creating index and pushing logs`
-    f. `AWS VPC, subnet and security group details`
-    g. `Github access`
-    h. `Load balancer in which all these host entries will be created`
-    i. `IAM Role for ECS Tasks`
-    j. `Hosted zone in AWS Route53`
+    a. `AWS Account to create resources` <br />
+            1. `Permissions for users running this need to have access to ECS, ECR, Route53, EC2, Secretmanager` <br />
+    b. `Application should be dockerized` <br />
+    c. `Application should be able to read environment variables from AWS Secret manager` <br />
+    d. `Elastic search and kibana endpoints for application logs` <br />
+    e. `Elastic search and kibana credentials for creating index and pushing logs` <br />
+    f. `AWS VPC, subnet and security group details` <br />
+    g. `Github access` <br />
+    h. `Load balancer in which all these host entries will be created` <br />
+    i. `IAM Role for ECS Tasks` <br />
+    j. `Hosted zone in AWS Route53` <br />
 
 
 1. Clone the repository using 
-    `git clone <repo_url>`
+    `git clone <repo_url>` 
 2. Install the python3 on machine based on system 
 
-    a. `brew install python@3.11`
-    b. `AWS access key and AWS secret keys setup as environment variables`
-    c. `Kibana username and password setup as environment variables`
-            1. `export kibanaUsername='*****'`
-            2. `export kibanaPassword='*****'`
-    d. `github username and secret to be setup as environment variables`
-            1. `export github_creds_USR='<githubusername>'`
-            2. `export github_creds_PSW='<github-secret-token>'`
+    a. `brew install python@3.11` <br />
+    b. `AWS access key and AWS secret keys setup as environment variables` <br />
+    c. `Kibana username and password setup as environment variables` <br />
+            1. `export kibanaUsername='*****'` <br />
+            2. `export kibanaPassword='*****'` <br />
+    d. `github username and secret to be setup as environment variables` <br />
+            1. `export github_creds_USR='<githubusername>'` <br />
+            2. `export github_creds_PSW='<github-secret-token>'` <br />
 3. Install the dependencies required by project by using [requirements.txt]
     `pip3 install -r requirements.txt`
 4. This is CLI Based app before running get to know the parameters to be passed by running 
