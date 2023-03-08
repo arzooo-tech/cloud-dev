@@ -19,6 +19,8 @@
 
 1. Clone the repository using 
     `git clone <repo_url>` 
+    `cd cloud-dev`
+    
 2. Install the python3 on machine based on system 
 
     a. `brew install python@3.11` <br />
