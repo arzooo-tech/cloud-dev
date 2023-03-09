@@ -30,8 +30,8 @@ To Contribute in the project, refer
 
 
 ## Authors and acknowledgment
-Somashekhar Kanade for design and implementation
-Rahul arya and sanidhya pawar for support and feedbacks
+Rahul arya and sanidhya pawar for support and feedbacks <br />
+Somashekhar Kanade for design and implementation 
 
 
 
