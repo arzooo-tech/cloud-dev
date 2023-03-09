@@ -1,5 +1,5 @@
 
-#           How to use cloud-dev platform 
+#           How to use cloud-dev platform [This implementation works on only AWS cloud as of today]
 
 ### On Mac Machine
 
