@@ -32,7 +32,7 @@ To Contribute in the project, refer
 ## Authors and acknowledgment
 Javed Khan for giving it a start <br />
 Rahul Arya for continuous support <br />
-Sanidhya Pawar and Venkatesh Deore for feedbacks to improve <br />
+Sanidhya Pawar, Somesh Kumar and Venkatesh Deore for continuous feedbacks to improve the platform <br />
 Somashekhar Kanade for design and implementation 
 
 
