@@ -6,7 +6,7 @@ Ondemand testing environment deployed on AWS ECS which can created and destroyed
 
 1. This creates all the necessary resources that are needed for deploying dockerized application on AWS ECS
 2. Deploy a branch from any of the github repository which needs to be tested/deployed on AWS ECS
-3. Outputs a endpoint/DNS which points to application DEPLOYED
+3. Outputs a endpoint/DNS which points to application Deployed
 
 
 # UseCases and Features
@@ -30,8 +30,10 @@ To Contribute in the project, refer
 
 
 ## Authors and acknowledgment
-Somashekhar Kanade for design and implementation
-Rahul arya and sanidhya pawar for support and feedbacks
+Javed Khan for giving it a start <br />
+Rahul arya for continuous support <br />
+Sanidhya pawar and venkatesh deore for feedbacks to improve <br />
+Somashekhar Kanade for design and implementation 
 
 
 
