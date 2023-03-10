@@ -31,8 +31,8 @@ To Contribute in the project, refer
 
 ## Authors and acknowledgment
 Javed Khan for giving it a start <br />
-Rahul arya for continuous support <br />
-Sanidhya pawar and venkatesh deore for feedbacks to improve <br />
+Rahul Arya for continuous support <br />
+Sanidhya Pawar and Venkatesh Deore for feedbacks to improve <br />
 Somashekhar Kanade for design and implementation 
 
 
