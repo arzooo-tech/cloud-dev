@@ -372,7 +372,7 @@ def main():
         domainName = userName + '-' + args.appName 
         FullDomainName = domainName + '.' + args.domainNameOfHostedZone
         # Delete ecs service
-        ecsServiceDeleteResponse = ecsService.deleteEcsService(ecsServiceName, args.ecsClusterName)
+        ecsServiceDeleteResponse = ecsService.deleteEcsService(ecsServiceName, args.ecsClusterName, args.region)
         if ecsServiceDeleteResponse:
             logger.info(" ECS service {} deleted ".format(ecsServiceName))
         else:
