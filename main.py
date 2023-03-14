@@ -243,9 +243,8 @@ def main():
         
         # Create index in kibana
         createIndexPatternResponse= kibana.createIndexPattern(args.appName, args.kibanaURL)
-        indexPatternName = args.appName + '*'
         if createIndexPatternResponse:
-            logger.info(" Index has been created in kibana with name {}".format(indexPatternName))
+            logger.info(" Index has been created in kibana with name {}".format(args.appName))
         else:
             logger.error(" Unable to create index in kibana please create index pattern in kibana manually")
 
