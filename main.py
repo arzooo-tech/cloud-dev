@@ -140,6 +140,14 @@ def main():
             sys.exit(1)
         else:
             logger.info(" DNS Doesnot exist proceeding")
+           
+        # Check if secret exists 
+        checkIfSecretExistsResponse = secretManager.checkIfSecretExists(args.secretName, region)
+        if checkIfSecretExistsResponse:
+            logger.info(" Secret exists proceeding")
+        else:
+            logger.error(" Secret does not exist please make sure secret is present in aws account")
+            sys.exit(1)
         
         
         clonedRepo = application.clone_repo(args.gitRepoName, args.branchName, args.githubOrgName)
@@ -311,6 +319,12 @@ def main():
             else:
                 logger.error(" Unable to delete ECR Repo")
                 
+            # Delete secret from secret manager 
+            deleteSecretRepoResponse = secretManager.deleteSecret(createNewSecretSecretManager)
+            if deleteSecretRepoResponse:
+                logger.info(" Secret deleted from secret manager")
+            else:
+                logger.error(" Unable to delete secret from secret manager")
     
     elif args.operation == 'update':
         ecsTaskDefinitionName = 'cloud-dev' + '-' + userName + '-' + args.appName 
