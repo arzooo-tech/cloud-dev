@@ -290,12 +290,6 @@ def main():
             else:
                 logger.error(" Unable to delete r53 entry {}".format(FullDomainName))
                 
-            # Delete secret from secret manager        
-            DeleteSecretFromSecretManagerResponse = secretManager.deleteSecret(secretName, args.region)
-            if DeleteSecretFromSecretManagerResponse:
-                logger.info(" Secret {} deleted from secret manager ".format(secretName))
-            else:
-                logger.error(" Unable to delete secret please check for error")
             
             #List all revisions of Taskdefinitions
             listTaskDefinitionARNS = taskDefinition.listTaskDefinitionARNS(ecsTaskDefinitionName, args.region)
@@ -317,13 +311,6 @@ def main():
             else:
                 logger.error(" Unable to delete ECR Repo")
                 
-            # Delete secret from secret manager        
-            DeleteSecretFromSecretManagerResponse = secretManager.deleteSecret(secretName)
-            if DeleteSecretFromSecretManagerResponse:
-                logger.info(" Secret {} deleted from secret manager ".format(secretName))
-            else:
-                logger.error(" Unable to delete secret please check for error")
-    
     
     elif args.operation == 'update':
         ecsTaskDefinitionName = 'cloud-dev' + '-' + userName + '-' + args.appName 
