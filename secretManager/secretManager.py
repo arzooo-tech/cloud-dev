@@ -5,6 +5,21 @@ from botocore.exceptions import ClientError
 # Create a Secrets Manager client
 #client = boto3.client('secretsmanager', region_name= region)
 
+# Method to check if secret exists
+def checkIfSecretExists(secretName: str, regionName: str):
+    client = boto3.client('secretsmanager', region_name= region)
+    """_summary_
+
+    Args:
+        secretName (str): Name of the secret to be checked if exists
+        regionName (str): region to be checked
+    """
+    try:
+        checkIfSecretExistsResponse = client.describe_secret(SecretId = secretName)
+        if checkIfSecretExistsResponse:
+            return True
+    except Exception as e:
+       return False
 
 # Method to create new secret by inheriting from existing secret
 def getAndCreateSecret(sourceSecretName: str, destSecretName: str, userEmail: str, region: str):
