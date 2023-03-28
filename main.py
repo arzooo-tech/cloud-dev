@@ -316,6 +316,13 @@ def main():
                 logger.info(" ECR repo deleted")
             else:
                 logger.error(" Unable to delete ECR Repo")
+                
+            # Delete secret from secret manager        
+            DeleteSecretFromSecretManagerResponse = secretManager.deleteSecret(secretName)
+            if DeleteSecretFromSecretManagerResponse:
+                logger.info(" Secret {} deleted from secret manager ".format(secretName))
+            else:
+                logger.error(" Unable to delete secret please check for error")
     
     
     elif args.operation == 'update':
